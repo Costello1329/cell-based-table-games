@@ -47,5 +47,13 @@ class Main {
             )))
                 System.out.println("Wrong move");
         }
+
+        System.out.println();
+        System.out.println(engine.getPresentation());
+
+        if (engine.getStatus() == Status.Draw)
+            System.out.println("Draw");
+        else
+            System.out.println("Player " + engine.getCurrentPlayer() + " won");
     }
 }
