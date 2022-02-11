@@ -2,6 +2,8 @@ package tafl;
 
 import core.*;
 
+import java.util.Optional;
+
 public class TaflEngine extends AbstractEngine {
     public TaflEngine (
         final FieldFactory factory,
@@ -19,12 +21,87 @@ public class TaflEngine extends AbstractEngine {
         if (!isMoveValid(move))
             return false;
 
-        field.placeFigure(move.to(), field.getCell(move.from()).get());
+        final AbstractFigure figure = field.getCell(move.from()).get();
+        field.placeFigure(move.to(), figure);
         field.removeFigure(move.from());
 
-        /// TODO: support capture, win and draw here...
+        // player wins by moving the king to the corner
+        if (((TaflField)field).isCornerCell(move.to()) && figure instanceof TaflKing) {
+            status = Status.Win;
+            return true;
+        }
+
+        // check captures
+        for (final Vector direction : Vector.directions) {
+            final Vector candidate = move.to().add(direction);
+            final Vector supporter = move.to().add(direction.multiply(2));
+
+            if (isWarriorCaptured(candidate, supporter))
+                field.removeFigure(candidate);
+
+            if (isKingCaptured(candidate)) {
+                status = Status.Win;
+                return true;
+            }
+        }
+
+        // player wins by destroying all the enemies
+        if (!enemyExists(currentPlayer)) {
+            status = Status.Win;
+            return true;
+        }
+
+        // TODO: support draw here
 
         switchPlayer();
+        return true;
+    }
+
+    private boolean enemyExists (final Player player) {
+        for (int y = 0; y < field.height; y ++)
+            for (int x = 0; x < field.width; x ++) {
+                final Optional<AbstractFigure> cell = field.getCell(new Vector(x, y));
+
+                if (cell.isPresent() && cell.get().player != player)
+                    return true;
+            }
+
+        return false;
+    }
+
+    private boolean isWarriorCaptured (final Vector candidate, final Vector supporter) {
+        return
+            field.isCellValid(candidate) &&
+            field.getCell(candidate).isPresent() &&
+            field.getCell(candidate).get() instanceof final TaflWarrior warrior &&
+            warrior.player != currentPlayer &&
+            field.isCellValid(supporter) && (
+                ((TaflField)field).isCornerCell(supporter) ||
+                field.getCell(supporter).isPresent() && field.getCell(supporter).get().player != warrior.player
+            );
+    }
+
+    private boolean isKingCaptured (final Vector candidate) {
+        if (
+            !field.isCellValid(candidate) ||
+            field.getCell(candidate).isEmpty() ||
+            !(field.getCell(candidate).get() instanceof final TaflKing king) ||
+            king.player == currentPlayer
+        )
+            return false;
+
+        for (final Vector direction : Vector.directions) {
+            final Vector supporter = candidate.add(direction);
+
+            if (!(
+                !field.isCellValid(supporter) ||
+                ((TaflField)field).isCornerCell(supporter) ||
+                ((TaflField)field).isCenterCell(supporter) && !settings.isKingAllowedToReturnToTheThrone() ||
+                field.getCell(supporter).isPresent() && field.getCell(supporter).get().player != king.player
+            ))
+                return false;
+        }
+
         return true;
     }
 
@@ -56,7 +133,7 @@ public class TaflEngine extends AbstractEngine {
 
         if (
             // cells should be different and connected by a straight (vertical or horizontal) line
-            (move.from().x() == move.to().x() ^ move.from().y() == move.to().y()) ||
+            (move.from().x() == move.to().x()) == (move.from().y() == move.to().y()) ||
             // move distance should be equal to one if figure move distance is restricted
             settings.isFigureMoveDistanceRestricted() && Vector.distance(move.from(), move.to()) > 1
         )

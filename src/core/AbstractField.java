@@ -17,8 +17,8 @@ public abstract class AbstractField {
         return field.get(position.y() * height + position.x());
     }
 
-    public void placeFigure (final Vector pos, final AbstractFigure figure) {
-        field.set(pos.y() * height + pos.x(), Optional.of(figure));
+    public void placeFigure (final Vector position, final AbstractFigure figure) {
+        field.set(position.y() * height + position.x(), Optional.of(figure));
     }
 
     public void removeFigure (final Vector position) {

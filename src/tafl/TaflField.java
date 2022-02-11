@@ -1,4 +1,8 @@
-package core;
+package tafl;
+
+import core.AbstractField;
+import core.AbstractFigure;
+import core.Vector;
 
 import java.util.Optional;
 
@@ -24,7 +28,10 @@ public class TaflField extends AbstractField {
         return stringBuilder.toString();
     }
 
-    public boolean isCornerCell (final Vector position) { return Vector.distance(position, center) == width + height; }
+    public boolean isCornerCell (final Vector position) {
+        return Vector.distance(position, center) == width / 2 + height / 2;
+    }
+
     public boolean isCenterCell (final Vector position) { return Vector.distance(position, center) == 0; }
 
     public final Vector center = new Vector(height / 2, width / 2);

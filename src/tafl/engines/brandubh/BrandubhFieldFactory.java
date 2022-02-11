@@ -3,6 +3,7 @@ package tafl.engines.brandubh;
 import core.*;
 import tafl.TaflKing;
 import tafl.TaflWarrior;
+import tafl.TaflField;
 
 public class BrandubhFieldFactory implements FieldFactory {
     @Override

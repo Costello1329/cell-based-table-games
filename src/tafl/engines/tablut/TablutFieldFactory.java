@@ -2,7 +2,7 @@ package tafl.engines.tablut;
 
 import core.FieldFactory;
 import core.Player;
-import core.TaflField;
+import tafl.TaflField;
 import core.Vector;
 import tafl.TaflKing;
 import tafl.TaflWarrior;

@@ -3,6 +3,7 @@ package tafl.engines.ardri;
 import core.*;
 import tafl.TaflKing;
 import tafl.TaflWarrior;
+import tafl.TaflField;
 
 public class ArdRiFieldFactory implements FieldFactory {
     @Override
