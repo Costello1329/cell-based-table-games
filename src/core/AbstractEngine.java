@@ -1,7 +1,7 @@
 package core;
 
-public abstract class AbstractEngine {
-    protected AbstractEngine (final FieldFactory fieldFactory, final Player initialPlayer) {
+public abstract class AbstractEngine<Field extends AbstractField> {
+    protected AbstractEngine (final FieldFactory<Field> fieldFactory, final Player initialPlayer) {
         field = fieldFactory.createField();
         currentPlayer = initialPlayer;
         status = Status.Active;
@@ -14,7 +14,7 @@ public abstract class AbstractEngine {
 
     protected void switchPlayer () { currentPlayer = currentPlayer == Player.White ? Player.Black : Player.White; }
 
-    protected final AbstractField field;
+    protected final Field field;
     protected Player currentPlayer;
     protected Status status;
 }

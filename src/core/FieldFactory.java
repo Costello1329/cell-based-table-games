@@ -1,5 +1,5 @@
 package core;
 
-public interface FieldFactory {
-    AbstractField createField ();
+public interface FieldFactory<Field extends AbstractField> {
+    Field createField ();
 }

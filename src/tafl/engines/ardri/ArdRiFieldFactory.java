@@ -5,9 +5,9 @@ import tafl.TaflKing;
 import tafl.TaflWarrior;
 import tafl.TaflField;
 
-public class ArdRiFieldFactory implements FieldFactory {
+public class ArdRiFieldFactory implements FieldFactory<TaflField> {
     @Override
-    public AbstractField createField () {
+    public TaflField createField () {
         final TaflField field = new TaflField(7);
         field.placeFigure(field.center, new TaflKing());
 

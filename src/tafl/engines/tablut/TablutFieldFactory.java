@@ -7,7 +7,7 @@ import core.Vector;
 import tafl.TaflKing;
 import tafl.TaflWarrior;
 
-public class TablutFieldFactory implements FieldFactory {
+public class TablutFieldFactory implements FieldFactory<TaflField> {
     @Override
     public TaflField createField () {
         final TaflField field = new TaflField(9);

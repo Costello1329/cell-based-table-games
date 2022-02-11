@@ -1,7 +1,4 @@
-import core.AbstractEngine;
-import core.Move;
-import core.Status;
-import core.Vector;
+import core.*;
 import tafl.engines.ardri.ArdRiEngine;
 import tafl.engines.brandubh.BrandubhEngine;
 import tafl.engines.tablut.TablutEngine;
@@ -11,7 +8,7 @@ import java.util.Scanner;
 class Main {
     public static void main (String[] args) {
         final Scanner scanner = new Scanner(System.in);
-        final AbstractEngine engine;
+        final AbstractEngine<? extends AbstractField> engine;
 
         while (true) {
             System.out.println("Choose game:");

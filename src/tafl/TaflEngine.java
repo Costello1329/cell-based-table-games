@@ -4,11 +4,8 @@ import core.*;
 
 import java.util.Optional;
 
-public class TaflEngine extends AbstractEngine {
-    public TaflEngine (
-        final FieldFactory factory,
-        final TaflSettings settings
-    ) {
+public class TaflEngine extends AbstractEngine<TaflField> {
+    public TaflEngine (final FieldFactory<TaflField> factory, final TaflSettings settings) {
         super(factory, Player.Black);
         this.settings = settings;
     }
@@ -26,7 +23,7 @@ public class TaflEngine extends AbstractEngine {
         field.removeFigure(move.from());
 
         // player wins by moving the king to the corner
-        if (((TaflField)field).isCornerCell(move.to()) && figure instanceof TaflKing) {
+        if (field.isCornerCell(move.to()) && figure instanceof TaflKing) {
             status = Status.Win;
             return true;
         }
@@ -88,7 +85,7 @@ public class TaflEngine extends AbstractEngine {
             field.getCell(candidate).get() instanceof final TaflWarrior warrior &&
             warrior.player != currentPlayer &&
             field.isCellValid(supporter) && (
-                ((TaflField)field).isCornerCell(supporter) ||
+                field.isCornerCell(supporter) ||
                 field.getCell(supporter).isPresent() && field.getCell(supporter).get().player != warrior.player
             );
     }
@@ -107,8 +104,8 @@ public class TaflEngine extends AbstractEngine {
 
             if (
                 field.isCellValid(supporter) &&
-                !((TaflField)field).isCornerCell(supporter) &&
-                !((TaflField)field).isCenterCell(supporter) &&
+                !field.isCornerCell(supporter) &&
+                !field.isCenterCell(supporter) &&
                 (field.getCell(supporter).isEmpty() || field.getCell(supporter).get().player == king.player)
             )
                 return false;
@@ -121,12 +118,11 @@ public class TaflEngine extends AbstractEngine {
         return
             figure instanceof TaflWarrior ?
             // throne and corner cells are inaccessible for warriors
-            !((TaflField)field).isCenterCell(cell) && !((TaflField)field).isCornerCell(cell) :
+            !field.isCenterCell(cell) && !field.isCornerCell(cell) :
             // throne is inaccessible even for the king if he is not allowed to return to it
-            !((TaflField)field).isCenterCell(cell) || settings.isKingAllowedToReturnToTheThrone();
+            !field.isCenterCell(cell) || settings.isKingAllowedToReturnToTheThrone();
     }
 
-    // TODO: introduce an example of avoiding casts to TaflField by using generics
     // TODO: Use custom exceptions for all the errors
     private boolean isMoveValid (final Move move) {
         if (
