@@ -1,6 +1,6 @@
 package core;
 
 public enum Player {
-    White,
-    Black
+    WHITE,
+    BLACK
 }

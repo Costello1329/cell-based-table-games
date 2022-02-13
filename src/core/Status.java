@@ -1,7 +1,7 @@
 package core;
 
 public enum Status {
-    Active,
-    Draw,
-    Win
+    ACTIVE,
+    DRAW,
+    WIN
 }

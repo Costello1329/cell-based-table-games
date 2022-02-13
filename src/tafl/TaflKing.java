@@ -4,6 +4,6 @@ import core.AbstractFigure;
 import core.Player;
 
 public class TaflKing extends AbstractFigure {
-    public TaflKing () { super(Player.White); }
+    public TaflKing () { super(Player.WHITE); }
     public String getPresentation() { return "◎"; }
 }

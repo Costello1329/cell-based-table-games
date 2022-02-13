@@ -1,6 +1,9 @@
 import core.*;
+import tafl.TaflField;
+import tafl.TaflMove;
 import tafl.engines.ardri.ArdRiEngine;
 import tafl.engines.brandubh.BrandubhEngine;
+import tafl.engines.brandubh.BrandubhFieldFactory;
 import tafl.engines.tablut.TablutEngine;
 
 import java.util.Scanner;
@@ -8,7 +11,7 @@ import java.util.Scanner;
 class Main {
     public static void main (String[] args) {
         final Scanner scanner = new Scanner(System.in);
-        final AbstractEngine<? extends AbstractField> engine;
+        final AbstractEngine<? extends AbstractField, TaflMove> engine;
 
         while (true) {
             System.out.println("Choose game:");
@@ -33,22 +36,25 @@ class Main {
             }
         }
 
-        while (engine.getStatus() == Status.Active) {
+        while (engine.getStatus() == Status.ACTIVE) {
             System.out.println();
             System.out.println(engine.getPresentation());
             System.out.println("Make move: ");
 
-            if (!engine.makeMove(new Move(
-                new Vector(scanner.nextInt(), scanner.nextInt()),
-                new Vector(scanner.nextInt(), scanner.nextInt())
-            )))
-                System.out.println("Wrong move");
+            try {
+                engine.makeMove(new TaflMove(
+                    new Vector(scanner.nextInt(), scanner.nextInt()),
+                    new Vector(scanner.nextInt(), scanner.nextInt())
+                ));
+            } catch (final InvalidMoveException exception) {
+                System.out.println("Wrong move: " + exception.getMessage());
+            }
         }
 
         System.out.println();
         System.out.println(engine.getPresentation());
 
-        if (engine.getStatus() == Status.Draw)
+        if (engine.getStatus() == Status.DRAW)
             System.out.println("Draw");
         else
             System.out.println("Player " + engine.getCurrentPlayer() + " won");
