@@ -29,10 +29,10 @@ public class TaflField extends AbstractField {
     }
 
     public boolean isCornerCell (final Vector position) {
-        return Vector.distance(position, center) == width / 2 + height / 2;
+        return Vector.distanceL1(position, center) == width / 2 + height / 2;
     }
 
-    public boolean isCenterCell (final Vector position) { return Vector.distance(position, center) == 0; }
+    public boolean isCenterCell (final Vector position) { return Vector.distanceL1(position, center) == 0; }
 
     public final Vector center = new Vector(height / 2, width / 2);
 }

@@ -1,18 +1,20 @@
 package core;
 
-public abstract class AbstractEngine<Field extends AbstractField, Move> {
+public abstract class AbstractEngine<Field extends AbstractField, Move extends AbstractMove> {
     protected AbstractEngine (final FieldFactory<Field> fieldFactory, final Player initialPlayer) {
         field = fieldFactory.createField();
         currentPlayer = initialPlayer;
         status = Status.ACTIVE;
     }
 
-    public void makeMove (final Move move) throws InvalidMoveException {
+    public void makeMove (final Move move) throws InvalidMoveException, StatusException {
         if (status != Status.ACTIVE)
-            return;
+            throw new StatusException();
 
         performMove(move);
-        currentPlayer = currentPlayer == Player.WHITE ? Player.BLACK : Player.WHITE;
+
+        if (status == Status.ACTIVE)
+            currentPlayer = currentPlayer == Player.WHITE ? Player.BLACK : Player.WHITE;
     }
 
     public String getPresentation () { return field.getPresentation(); }

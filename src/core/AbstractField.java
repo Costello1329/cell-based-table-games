@@ -5,11 +5,11 @@ import java.util.Optional;
 
 public abstract class AbstractField {
     protected AbstractField (final int height, final int width) {
-        this.width = width;
         this.height = height;
+        this.width = width;
         field = new ArrayList<>();
 
-        for (int i = 0; i < width * height; i ++)
+        for (int i = 0; i < height * width; i ++)
             field.add(Optional.empty());
     }
 
@@ -31,10 +31,10 @@ public abstract class AbstractField {
         return position.y() >= 0 && position.y() < height && position.x() >= 0 && position.x() < width;
     }
 
-    public int getWidth () { return width; }
     public int getHeight () { return height; }
+    public int getWidth () { return width; }
 
-    protected final int width;
     protected final int height;
+    protected final int width;
     protected final ArrayList<Optional<AbstractFigure>> field;
 }
