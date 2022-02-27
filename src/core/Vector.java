@@ -8,7 +8,7 @@ public record Vector (int x, int y) {
     public Vector copy () { return new Vector(x, y); }
 
     @Override
-    public boolean equals (Object other) {
+    public boolean equals (final Object other) {
         return other instanceof final Vector otherVector && x == otherVector.x() && y == otherVector.y();
     }
 

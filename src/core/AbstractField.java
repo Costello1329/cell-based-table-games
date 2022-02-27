@@ -4,37 +4,48 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public abstract class AbstractField {
-    protected AbstractField (final int height, final int width) {
-        this.height = height;
-        this.width = width;
+    public AbstractField (final int size) {
+        this.size = size;
         field = new ArrayList<>();
 
-        for (int i = 0; i < height * width; i ++)
+        for (int i = 0; i < size * size; i ++)
             field.add(Optional.empty());
     }
 
-    public abstract String getPresentation ();
+    public String getPresentation () {
+        StringBuilder stringBuilder = new StringBuilder();
 
-    public Optional<AbstractFigure> getCell (final Vector position) {
-        return field.get(position.y() * width + position.x());
+        for (int y = size - 1; y >= 0; y --)
+            for (int x = 0; x < size; x ++) {
+                final Vector position = new Vector(x, y);
+                final Optional<AbstractFigure> cell = getCell(position);
+                stringBuilder.append(
+                    cell.isPresent() ?
+                    cell.get().getPresentation() :
+                    getCellPresentation(position)
+                );
+                stringBuilder.append(x == size - 1 ? "\n" : " ");
+            }
+
+        return stringBuilder.toString();
     }
 
-    public void placeFigure (final Vector position, final AbstractFigure figure) {
-        field.set(position.y() * width + position.x(), Optional.of(figure));
+    public Optional<AbstractFigure> getCell (final Vector cell) { return field.get(cell.y() * size + cell.x()); }
+
+    public void placeFigure (final Vector cell, final AbstractFigure figure) {
+        field.set(cell.y() * size + cell.x(), Optional.of(figure));
     }
 
-    public void removeFigure (final Vector position) {
-        field.set(position.y() * width + position.x(), Optional.empty());
+    public void removeFigure (final Vector cell) { field.set(cell.y() * size + cell.x(), Optional.empty()); }
+
+    public boolean isCellValid (final Vector cell) {
+        return cell.y() >= 0 && cell.y() < size && cell.x() >= 0 && cell.x() < size;
     }
 
-    public boolean isCellValid (final Vector position) {
-        return position.y() >= 0 && position.y() < height && position.x() >= 0 && position.x() < width;
-    }
+    public int getSize () { return size; }
 
-    public int getHeight () { return height; }
-    public int getWidth () { return width; }
+    protected abstract String getCellPresentation (final Vector position);
 
-    protected final int height;
-    protected final int width;
-    protected final ArrayList<Optional<AbstractFigure>> field;
+    private final int size;
+    private final ArrayList<Optional<AbstractFigure>> field;
 }

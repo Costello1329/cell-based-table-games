@@ -3,9 +3,7 @@ package tictactoe;
 import core.*;
 
 public class TicTacToeEngine extends AbstractEngine<TicTacToeField, TicTacToeMove> {
-    public TicTacToeEngine (final int size) {
-        super(new TicTacToeFieldFactory(size), Player.WHITE);
-    }
+    public TicTacToeEngine (final int size) { super(new TicTacToeFieldFactory(size), Player.WHITE); }
 
     @Override
     public void performMove (final TicTacToeMove move) throws InvalidMoveException {
@@ -51,12 +49,12 @@ public class TicTacToeEngine extends AbstractEngine<TicTacToeField, TicTacToeMov
                 return false;
         }
 
-        return lineLength == field.getHeight() || lineLength == field.getWidth();
+        return lineLength == field.getSize();
     }
 
     private boolean checkDraw () {
-        for (int i = 0; i < field.getHeight() * field.getWidth(); i ++)
-            if (field.getCell(new Vector(i % field.getHeight(), i / field.getHeight())).isEmpty())
+        for (int i = 0; i < field.getSize() * field.getSize(); i ++)
+            if (field.getCell(new Vector(i % field.getSize(), i / field.getSize())).isEmpty())
                 return false;
 
         return true;

@@ -40,8 +40,8 @@ public class TaflEngine extends AbstractEngine<TaflField, TaflMove> {
     }
 
     private boolean enemyHasNoMoves (final Player player) {
-        for (int y = 0; y < field.getHeight(); y ++)
-            for (int x = 0; x < field.getWidth(); x ++) {
+        for (int y = 0; y < field.getSize(); y ++)
+            for (int x = 0; x < field.getSize(); x ++) {
                 final Vector position = new Vector(x, y);
                 final Optional<AbstractFigure> cell = field.getCell(position);
 

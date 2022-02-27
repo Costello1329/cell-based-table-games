@@ -1,7 +1,7 @@
 package core;
 
 public abstract class AbstractEngine<Field extends AbstractField, Move extends AbstractMove> {
-    protected AbstractEngine (final FieldFactory<Field> fieldFactory, final Player initialPlayer) {
+    public AbstractEngine (final FieldFactory<Field> fieldFactory, final Player initialPlayer) {
         field = fieldFactory.createField();
         currentPlayer = initialPlayer;
         status = Status.ACTIVE;

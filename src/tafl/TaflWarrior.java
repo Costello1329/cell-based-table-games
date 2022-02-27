@@ -7,5 +7,5 @@ public class TaflWarrior extends AbstractFigure {
     public TaflWarrior (final Player player) { super(player); }
 
     @Override
-    public String getPresentation () { return player == Player.WHITE ? "◆" : "◇"; }
+    public String getPresentation () { return getPlayer() == Player.WHITE ? "◆" : "◇"; }
 }
