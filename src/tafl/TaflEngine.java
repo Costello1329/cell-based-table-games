@@ -19,12 +19,12 @@ public class TaflEngine extends AbstractEngine<TaflField, TaflMove> {
         // check captures
         for (final Vector direction : Vector.DIRECTIONS_L_1) {
             final Vector candidate = move.getTo().add(direction);
-            final Vector helper = move.getTo().add(direction.multiply(2));
+            final Vector supporter = move.getTo().add(direction.multiply(2));
 
-            if (isWarriorCaptured(candidate, helper))
+            if (isWarriorCaptured(candidate, supporter))
                 field.removeFigure(candidate);
 
-            if (isKingCaptured(candidate)) {
+            else if (isKingCaptured(candidate)) {
                 setStatus(Status.WIN);
                 return;
             }
@@ -66,15 +66,15 @@ public class TaflEngine extends AbstractEngine<TaflField, TaflMove> {
         return true;
     }
 
-    private boolean isWarriorCaptured (final Vector candidate, final Vector helper) {
+    private boolean isWarriorCaptured (final Vector candidate, final Vector supporter) {
         return
             field.isCellValid(candidate) &&
             field.getCell(candidate).isPresent() &&
             field.getCell(candidate).get() instanceof final TaflWarrior warrior &&
             warrior.getPlayer() != getCurrentPlayer() &&
-            field.isCellValid(helper) && (
-                field.isCornerCell(helper) ||
-                field.getCell(helper).isPresent() && field.getCell(helper).get().getPlayer() != warrior.getPlayer()
+            field.isCellValid(supporter) && (
+                field.isCornerCell(supporter) ||
+                field.getCell(supporter).isPresent() && field.getCell(supporter).get().getPlayer() == getCurrentPlayer()
             );
     }
 
@@ -94,7 +94,7 @@ public class TaflEngine extends AbstractEngine<TaflField, TaflMove> {
                 field.isCellValid(supporter) &&
                 !field.isCornerCell(supporter) &&
                 !field.isCenterCell(supporter) &&
-                (field.getCell(supporter).isEmpty() || field.getCell(supporter).get().getPlayer() == king.getPlayer())
+                (field.getCell(supporter).isEmpty() || field.getCell(supporter).get().getPlayer() != getCurrentPlayer())
             )
                 return false;
         }
@@ -119,15 +119,13 @@ public class TaflEngine extends AbstractEngine<TaflField, TaflMove> {
             throw new InvalidMoveException("initial cell is empty");
 
         if (field.getCell(move.getFrom()).get().getPlayer() != getCurrentPlayer())
-            throw new InvalidMoveException("figure in the initial cell is not owned by the current user");
+            throw new InvalidMoveException("figure in the initial cell is not owned by the current player");
 
         if (!field.isCellValid(move.getTo()))
             throw new InvalidMoveException("target cell is invalid");
 
         if (field.getCell(move.getTo()).isPresent())
             throw new InvalidMoveException("target cell is occupied");
-
-        final AbstractFigure figure = field.getCell(move.getFrom()).get();
 
         if (move.getFrom().x() != move.getTo().x() && move.getFrom().y() != move.getTo().y())
             throw new InvalidMoveException("cells should be connected by a straight (vertical or horizontal) line");
@@ -140,10 +138,12 @@ public class TaflEngine extends AbstractEngine<TaflField, TaflMove> {
         if (settings.isFigureMoveDistanceRestricted() && moveDistance > 1)
             throw new InvalidMoveException("move distance should be equal to one, because move distance is restricted");
 
-        final Vector direction = move.getTo().subtract(move.getFrom()).divide(moveDistance);
+        final AbstractFigure figure = field.getCell(move.getFrom()).get();
 
         if (!isCellAvailableForTheFigure(move.getTo(), figure))
             throw new InvalidMoveException("target cell should be available to the figure");
+
+        final Vector direction = move.getTo().subtract(move.getFrom()).divide(moveDistance);
 
         for (
             Vector current = move.getFrom().add(direction);
@@ -152,15 +152,18 @@ public class TaflEngine extends AbstractEngine<TaflField, TaflMove> {
         ) {
             if (field.getCell(current).isPresent())
                 throw new InvalidMoveException(
-                    "there should be no other figures on the pass from the initial cell to the target cell");
+                    "there should be no other figures on the path from the initial cell to the target cell, but " +
+                    "the cell " + current + " already contains the figure"
+                );
 
             if (!isCellAvailableForTheFigure(current, figure))
                 throw new InvalidMoveException(
                     "All cells on the path from the initial cell to the final cell must be available to the current" +
-                    "figure, but the cell " + current + " – isn't");
+                    "figure, but the cell " + current + " – isn't"
+                );
         }
 
-        return field.getCell(move.getFrom()).get();
+        return figure;
     }
 
     private final TaflSettings settings;
